@@ -19,45 +19,48 @@
             <div class="form login">
                 <div class="form-content">
                     <header>Sign Up</header>
-                    <form #signupForm="ngForm" (ngSubmit) = "addUser(signupForm)" >
+                    <form #signupForm="ngForm" (ngSubmit)="signupForm.valid && onSubmit(signupForm)" >
 
                       <div class="field input-field">
-                        <input type="email" [(ngModel)]="email" name="email" placeholder="Email" class="input">
-                        <!--<div *ngIf="signUpForm.submitted && email.errors">
-                            <label *ngIf="email.errors['required']" class="validation-message"> This field is required</label>
-                            <label *ngIf="email.errors['pattern']" class="validation-message"> Invalid email address.</label>
-                        </div>-->
+                        <input type="email" #email="ngModel" [(ngModel)]="userService.selectedUser.email"  name="email" placeholder="Email" class="input"
+                        required [pattern] ="emailRegex" [ngClass]="{'invalid-textbox' :signupForm.submitted && !email.valid}">
+                        <div *ngIf="signupForm.submitted && email.errors?.['pattern']">
+                            <label *ngIf="email.errors?.['required']" class="validation-message"> This field is required</label>
+                            <label *ngIf="email.errors?.['pattern']" class="validation-message"> Invalid email address.</label>
+                        </div>
                     </div>
 
                     <div class="field input-field">
-                        <input type="password" [(ngModel)]="password" name="password" placeholder="Create password" class="password"
-                        minlength="4" required >
-                    <!--    <div *ngIf="signUpForm.submitted && password.errors">
-                            <label *ngIf="password.errors['required']" class="validation-message"> This field is required</label>
-                            <label *ngIf="password.errors['minlength']" class="validation-message"> Enter atleast 4 characters</label>
-                        </div> -->
+                        <input type="password" #password="ngModel" [(ngModel)]="userService.selectedUser.password" name="password" placeholder="Create password" class="password"
+                        minlength="4" required [ngClass]="{'invalid-textbox' :signupForm.submitted && !password.valid }">
+                        <div *ngIf="signupForm.submitted && password.errors?.['minlength']">
+                            <label *ngIf="email.errors?.['required']" class="validation-message"> This field is required</label>
+                            <label  *ngIf="email.errors?.['minlength']" class="validation-message"> Enter atleast 4 characters</label>
+                        </div>
                     </div>
 
                     <div class="field button-field">
                         <input type="submit" value="Sign Up">
                     </div>
                     </form>
-<!-- Success message -->
-<div class="success" *ngIf="showSucessMessage">
-  Saved successfully
-</div>
 
-<!-- Error message -->
-<div class="alert" *ngIf="serverErrorMessages">
-  {{serverErrorMessages}}
-</div>
+
+                    <!-- Success message -->
+                    <div *ngIf="showSuccessMessage" class="alert alert-success" role="alert">
+                    Saved Successfully
+                    </div>
+                   
+                    <!-- Error message -->
+                    <div class="alert" *ngIf="serverErrorMessages">
+                    {{serverErrorMessages}}
+                    </div>
                    
                     <div class="form-link">
                       <span>Already have an account? <a href="/login" class="link login-link">Login</a></span>
                   </div>
               </div>
 
-              <div class="line"></div>
+            <div class="line"></div>
 
               <div class="media-options">
                   <a href="#" class="field facebook">

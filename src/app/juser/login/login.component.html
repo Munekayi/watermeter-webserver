@@ -19,25 +19,43 @@
             <div class="form login">
                 <div class="form-content">
                     <header>Login</header>
-                    <form action="#">
+                    <form #loginForm="ngForm" (ngSubmit)="loginForm.valid && onLogin(loginForm)">
                         <div class="field input-field">
-                            <input type="email" placeholder="Email" class="input">
+                          <input type="email" #email="ngModel" [(ngModel)]="userService.selectedUser.email" name="email" placeholder="Email" class="input" required [pattern]="emailRegex" [ngClass]="{'invalid-textbox' : loginForm.submitted && !email.valid}">
+                          <div *ngIf="loginForm.submitted && email.errors">
+                            <label *ngIf="email.errors?.['required']" class="validation-message">This field is required</label>
+                            <label *ngIf="email.errors?.['pattern']"class="validation-message">Invalid email address.</label>
+                          </div>
                         </div>
-
+                      
                         <div class="field input-field">
-                            <input type="password" placeholder="Password" class="password">
-                            <i class='bx bx-hide eye-icon'></i>
+                          <input type="password" #password="ngModel" [(ngModel)]="userService.selectedUser.password" name="password" placeholder="Password" class="password" minlength="4" required [ngClass]="{'invalid-textbox' : loginForm.submitted && !password.valid}">
+                          <div *ngIf="loginForm.submitted && password.errors">
+                            <label  *ngIf="email.errors?.['required']" class="validation-message">This field is required</label>
+                            <label  *ngIf="email.errors?.['minlength']" class="validation-message">Enter at least 4 characters</label>
+                          </div>
                         </div>
-
+                      <br>
+                        <!-- Success message -->
+                    <div *ngIf="showSuccessMessage" class="alert alert-success" role="alert">
+                      Saved Successfully
+                      </div>
+                     
+                      <!-- Error message -->
+                      <div class="alert" *ngIf="serverErrorMessages">
+                      {{serverErrorMessages}}
+                      </div>
                         <div class="form-link">
-                            <a href="#" class="forgot-pass">Forgot password?</a>
+                          <a href="#" class="forgot-pass">Forgot password?</a>
                         </div>
-
+                      
                         <div class="field button-field">
-                            <input type="submit" value="Login">
+                          <button type="submit" >Login</button>
                         </div>
-                    </form>
+                      </form>
+                      
 
+                  
                     <div class="form-link">
                         <span>Don't have an account? <a href="/signup" class="link signup-link">Signup</a></span>
                     </div>

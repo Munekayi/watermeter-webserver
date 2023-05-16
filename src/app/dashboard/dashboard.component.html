@@ -1,12 +1,11 @@
 <!--
 =========================================================
-* Material Dashboard 2 - v3.0.5
+* Munekayi Mfuamba Smart Meter Web Server - v0.0.1
 =========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-* Coded by Creative Tim
+
+* Copyright 2023 Munekayi Mfuamba
+* Coded by Munekayi Mfuamba
 
 =========================================================
 
@@ -92,11 +91,11 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white " href="/login">
+          <a class="nav-link text-white " href="/login" (click)="onLogout()">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">login</i>
+              <i class="material-icons opacity-10">logout</i>
             </div>
-            <span class="nav-link-text ms-1">Sign In</span>
+            <span class="nav-link-text ms-1">Log Out</span>
           </a>
         </li>
         <li class="nav-item">
@@ -111,7 +110,7 @@
     </div>
     <div class="sidenav-footer position-absolute w-100 bottom-0 ">
       <div class="mx-3">
-        <a class="btn bg-gradient-primary mt-4 w-100" href="https://www.creative-tim.com/product/material-dashboard-pro?ref=sidebarfree" type="button">UKZN DESIGN 3</a>
+        <a class="btn bg-gradient-primary mt-4 w-100" href="" type="button">UKZN DESIGN 3</a>
       </div>
     </div>
   </aside>
@@ -127,7 +126,7 @@
             <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
             <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Dashboard</li>
           </ol>
-          <h6 class="font-weight-bolder mb-0">Dashboard</h6>
+          <h6 class="font-weight-bolder mb-0">Dashboard: {{email}}</h6>
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
           <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -138,12 +137,12 @@
           </div>
           <ul class="navbar-nav  justify-content-end">
             <li class="nav-item d-flex align-items-center">
-              <a class="btn btn-outline-primary btn-sm mb-0 me-3" target="_blank" href="https://www.creative-tim.com/builder?ref=navbar-material-dashboard">UKZN Water Meter</a>
+              <a class="btn btn-outline-primary btn-sm mb-0 me-3" >Water Meter ID#:{{meterId}} </a>
             </li>
             <li class="nav-item d-flex align-items-center">
-              <a href="/login" class="nav-link text-body font-weight-bold px-0">
+              <a href="/login" class="nav-link text-body font-weight-bold px-0" (click)="onLogout()">
                 <i class="fa fa-user me-sm-1"></i>
-                <span class="d-sm-inline d-none">Sign In</span>
+                <span class="d-sm-inline d-none">Log Out</span>
               </a>
             </li>
             <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
@@ -251,9 +250,7 @@
               </div>
               <div class="text-end pt-1">
                 <h5 class="text-sm mb-0 text-capitalize">Amount Owing</h5>
-                <div *ngFor="let reading of readings">
-                  {{ reading.amountowing }}
-                </div> 
+                <h6 > R {{amountowing}}</h6> 
               </div>
             </div>
             <hr class="dark horizontal my-0">
@@ -270,9 +267,7 @@
               </div>
               <div class="text-end pt-1">
                 <h5 class="text-sm mb-0 text-capitalize">Volume Used</h5>
-                <div *ngFor="let reading of readings">
-                  {{ reading.volume }}
-                </div> 
+                <h6>{{ volumeused }} Litres</h6>
               </div>
             </div>
             <hr class="dark horizontal my-0">
@@ -289,9 +284,7 @@
               </div>
               <div class="text-end pt-1">
                 <h5 class="text-sm mb-0 text-capitalize">Water Flow Rate l/m</h5>
-                <div *ngFor="let reading of readings">
-                  {{ reading.flowrate }}
-                </div>                
+                <h6>{{ flowrate }} litres/minute</h6>
               </div>
             </div>
             <hr class="dark horizontal my-0">
@@ -308,9 +301,7 @@
               </div>
               <div class="text-end pt-1">
                 <h5 class="text-sm mb-0 text-capitalize">Frequency</h5>
-                <div *ngFor="let reading of readings">
-                  {{ reading.frequency }}
-                </div> 
+                <h6>{{ frequency }} Hz</h6>
               </div>
             </div>
             <hr class="dark horizontal my-0">
@@ -855,93 +846,7 @@
   <!--   Core JS Files   -->
 
 
-  <script>
-
-    var ctx2 = document.getElementById('dailySalesChart').getContext("2d");
-
-    new Chart(ctx2, {
-      type: "line",
-      data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        datasets: [{
-          label: "Mobile apps",
-          tension: 0,
-          borderWidth: 0,
-          pointRadius: 5,
-          pointBackgroundColor: "rgba(255, 255, 255, .8)",
-          pointBorderColor: "transparent",
-          borderColor: "rgba(255, 255, 255, .8)",
-          borderColor: "rgba(255, 255, 255, .8)",
-          borderWidth: 4,
-          backgroundColor: "transparent",
-          fill: true,
-          data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
-          maxBarThickness: 6
-
-        }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          }
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        scales: {
-          y: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5],
-              color: 'rgba(255, 255, 255, .2)'
-            },
-            ticks: {
-              display: true,
-              color: '#f8f9fa',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-          x: {
-            grid: {
-              drawBorder: false,
-              display: false,
-              drawOnChartArea: false,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              color: '#f8f9fa',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-        },
-      },
-    });
-
   
-  </script>
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -953,7 +858,19 @@
   </script>
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
- 
+  
+  <script>
+    // Get the bar icon element
+    const iconNavbarSidenav = document.getElementById('iconNavbarSidenav');
+  
+    // Add a click event listener to toggle the sidebar
+    iconNavbarSidenav.addEventListener('click', function() {
+      // Your code to toggle the sidebar goes here
+      // For example, you can toggle a CSS class on the sidebar element to show/hide it
+      const sidebar = document.getElementById('navbarBlur'); // Replace 'sidebar' with the actual ID of your sidebar element
+      sidebar.classList.toggle('sidebar-visible');
+    });
+  </script>
 </body>
 
 </html>

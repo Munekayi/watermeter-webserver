@@ -1,8 +1,11 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import Chart from 'chart.js/auto';
 import * as Chartist from 'chartist';
-import { HttpClient } from '@angular/common/http';
-import { MyDataService } from '../mydata.service';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { UserService } from '../shared/user.service';
+import { interval } from 'rxjs';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -14,18 +17,22 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   @ViewChild('completedTasksChart') completedTasksChart!: ElementRef<HTMLCanvasElement>;
   @ViewChild('dailySalesChart') dailySalesChart!: ElementRef<HTMLCanvasElement>;
   @ViewChild('websiteViewsChart') websiteViewsChart!: ElementRef<HTMLCanvasElement>;
-  constructor(private http: HttpClient, private myDataService: MyDataService) { }
+  email: string | undefined;
+  meterId!: string;
+  amountowing: string | undefined;
+  volumeused: string | undefined;
+  flowrate: string | undefined;
+  frequency: string | undefined;
+  
+  userDetails: any;
+  //userMeterId: string | undefined;
+  constructor(private http: HttpClient, private userService: UserService, private router: Router) { }
   chart!: Chart;
   readings: any[] = [];
+   // or the appropriate type for your meterId
+   
 
-  /*getReadings(): void {
-    this.http.get<any[]>('http://localhost:3200/api/readings').subscribe((data: any[]) => {
-      // Take the last element of the array (i.e., the latest reading)
-      this.readings = data;
-    });
-  }
-  */
-  data: any[] = [];
+  
   ngAfterViewInit() {
     const canvas = this.completedTasksChart.nativeElement;
     if (canvas) {
@@ -288,17 +295,37 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
 
   }
-
+  onLogout(){
+    this.userService.deleteToken();
+    this.router.navigateByUrl('/login');
+  }
 ngOnInit() {
-  /* this.myDataService.getDataFromCollection().subscribe(
-     (data: any[]) => {
-       this.data = data;
-     },
-     (err) => {
-       console.error('Error retrieving data', err);
-     }
-   );
-   */
+  this.userService.getUserProfile().subscribe(
+    (res: any) => {
+      console.log('User Profilessss:', res);
+      this.userDetails = res;
+      this.email = res.user.email;
+      this.meterId = res.user.meterId;
+    },
+    (err: any) => {
+      console.log(err);
+    }
+  );
+  this.userService.getSensorData(this.meterId).subscribe(
+    (res: any) => {
+      console.log('Sensor Details:', res);
+      this.userDetails = res;
+      this.amountowing = res[0].amountowing;
+      this.volumeused = res[0].volumeused;
+      this.flowrate = res[0].flowrate;
+      this.frequency = res[0].frequency;
+    },
+    (err: any) => {
+      console.log(err);
+    }
+  );
+  //this.getSensorData();
+
   }
 }
 

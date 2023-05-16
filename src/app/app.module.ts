@@ -28,6 +28,13 @@ import { BillingComponent } from './billing/billing.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { ProfileComponent } from './profile/profile.component';
 
+
+//other
+import { AuthGuard } from 'src/auth/auth.guard';
+import { UserService } from './shared/user.service';
+import { NewcardComponent } from './newcard/newcard/newcard.component';
+import { FormsComponent } from './forms/forms.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,7 +46,9 @@ import { ProfileComponent } from './profile/profile.component';
     JuserComponent,
     BillingComponent,
     NotificationsComponent,
-    ProfileComponent
+    ProfileComponent,
+    NewcardComponent,
+    FormsComponent
   ],
   imports: [
     BrowserModule,
@@ -59,7 +68,7 @@ import { ProfileComponent } from './profile/profile.component';
     MatTooltipModule 
   ],
 
-  providers: [],
+  providers: [AuthGuard,UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

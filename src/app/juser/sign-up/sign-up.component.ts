@@ -1,61 +1,58 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { User } from 'src/app/shared/user.model';
-import { UserService } from '../../shared/user.service'
+import { UserService } from '../../shared/user.service';
 import { Router } from '@angular/router';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
-  styleUrls: ['./sign-up.component.css'],
-  providers: [UserService]
+  styleUrls: ['./sign-up.component.css']
 })
+
 export class SignUpComponent implements OnInit {
   emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  showSucessMessage = false ;
-  serverErrorMessages =" ";
+  showSuccessMessage = false;
+  serverErrorMessages = '';
 
-  users!: User[];
-  user!: User;
-  email!: string;
-  password!: string;
-  form!: NgForm;
+  constructor(public userService: UserService, private router: Router) {}
 
-  constructor(public userService:UserService, private router:Router) {
-    this.users =[];
-  }
+  ngOnInit() {}
+  
 
-  addUser(signupForm: NgForm)
-  {  
-    const newUser = {
-      email: this.email,
-      password: this.password,
-    }
-    this.userService.addUser(newUser)
-      .subscribe(user => {
-        this.users.push(user);
-        this.userService.getUsers()
-        .subscribe( users =>
-          this.users = users);
-          //this.resetForm(signupForm);
-          this.router.navigate(['/login']); // navigate to login page after signup
+  onSubmit(form: NgForm) {
+    const newUser: User = form.value as User;
+    this.userService
+      .addUser(newUser)
+      .pipe(
+        tap(() => {
+          this.resetForm(form);
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.showSuccessMessage = true;
+          setTimeout(() => (this.showSuccessMessage = false), 4000);
+          this.router.navigate(['/login']);
+        },
+        error: (err) => {
+          if (err.status === 422) {
+            this.serverErrorMessages = err.error.join('<br/>');
+          } else {
+            this.serverErrorMessages = err.message;
+          }
+        }
       });
-      
-  };
-  ngOnInit() {
-    this.userService.getUsers()
-        .subscribe( users =>
-          this.users = users);
+  }
 
+  resetForm(form: NgForm) {
+    form.reset();
+    form.setValue({
+      email: '',
+      password: ''
+    });
+
+    this.serverErrorMessages = '';
   }
- /*resetForm(signupForm: NgForm) {
-  if (signupForm) {
-    signupForm.resetForm();
-  }
-  this.user = new User();
-  this.serverErrorMessages = '';
-  this.userService.selectedUser = {
-    email: '',
-    password: ''
-  };*/
- }
+}
